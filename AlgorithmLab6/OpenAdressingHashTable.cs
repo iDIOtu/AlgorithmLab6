@@ -2,7 +2,7 @@
 
 namespace AlgorithmLab6
 {
-    internal class OpenAdressingHashTable<T1, T2> : IHashTable<T1, T2>
+    internal class OpenAddressingHashTable<T1, T2> : IHashTable<T1, T2>
     {
         public T2 Add(T1 key)
         {
