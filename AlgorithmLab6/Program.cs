@@ -7,12 +7,7 @@ namespace AlgorithmLab6
     {
         static void Main(string[] args)
         {
-            OpenAddressingHashTable<string, string> stringOATable = FillOATableWithStrings(35000);
-            Console.WriteLine(stringOATable.GetSize());
-            Console.WriteLine(stringOATable.GetCount());
-            Console.WriteLine(stringOATable.MaxClusterLength());
-            Console.WriteLine(stringOATable.Find("10000", out string v));
-            //RunTestOpenAddressingTable();
+            
         }
 
         static void RunTestOpenAddressingTable()
@@ -51,9 +46,10 @@ namespace AlgorithmLab6
             Console.WriteLine(stringOATable.MaxClusterLength());
         }
 
-        static public OpenAddressingHashTable<int, int> FillOATable(int Size)
+        static public OpenAddressingHashTable<int, int> FillOATable(int Size) { return FillOATable(Size, "quadratic"); }
+        static public OpenAddressingHashTable<int, int> FillOATable(int Size, string probingMethod)
         {
-            OpenAddressingHashTable<int, int> hashTable = new OpenAddressingHashTable<int, int>();
+            OpenAddressingHashTable<int, int> hashTable = new OpenAddressingHashTable<int, int>(probingMethod);
             Random random = new Random();
             for (int i = 0; i < Size; i++)
             {
@@ -63,9 +59,10 @@ namespace AlgorithmLab6
             return hashTable;
         }
 
-        static public OpenAddressingHashTable<string, string> FillOATableWithStrings(int Size)
+        static public OpenAddressingHashTable<string, string> FillOATableWithStrings(int Size) { return FillOATableWithStrings(Size, "quadratic"); }
+        static public OpenAddressingHashTable<string, string> FillOATableWithStrings(int Size, string probingMethod)
         {
-            OpenAddressingHashTable<string, string> hashTable = new OpenAddressingHashTable<string, string>();
+            OpenAddressingHashTable<string, string> hashTable = new OpenAddressingHashTable<string, string>(probingMethod);
             Random random = new Random();
             for (int i = 0; i < Size; i++)
             {
