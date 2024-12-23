@@ -14,9 +14,9 @@ namespace AlgorithmLab6
         {
             OpenAddressingHashTable<string, string> hashTable = new OpenAddressingHashTable<string, string>();
             // Вставка элементов
-            hashTable.Insert("2", "1");
-            hashTable.Insert("2", "2");
-            hashTable.Insert("3", "3");
+            hashTable.Add("2", "1", "quadratic");
+            hashTable.Add("2", "2", "quadratic");
+            hashTable.Add("3", "3", "quadratic");
 
             // Поиск элементов
             Console.WriteLine(hashTable.Find("2", out string foundedValue)); // True
@@ -51,7 +51,7 @@ namespace AlgorithmLab6
             for (int i = 0; i < Size; i++)
             {
                 int value = random.Next(10000);
-                hashTable.Insert(i, i);
+                hashTable.Add(i, i, "quadratic");
             }
             return hashTable;
         }

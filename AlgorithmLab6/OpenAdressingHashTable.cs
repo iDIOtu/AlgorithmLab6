@@ -58,7 +58,7 @@ namespace AlgorithmLab6
         }
 
         // Вставка элемента
-        public void Insert(T1 key, T2 value, string probingMethod = "quadratic")
+        public void Add(T1 key, T2 value, string probingMethod)
         {
             if (count >= Size)
             {
