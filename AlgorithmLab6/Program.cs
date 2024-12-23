@@ -7,7 +7,8 @@ namespace AlgorithmLab6
     {
         static void Main(string[] args)
         {
-            RunTestOpenAddressingTable();
+            //RunFunctionalTestOpenAddressingTable();
+            //RunTestOpenAddressingTable();
         }
 
         static void RunTestOpenAddressingTable()
@@ -43,6 +44,31 @@ namespace AlgorithmLab6
             Console.WriteLine("Двойное:     " + " " + Double.GetSize() + "         " + Double.GetCount() + "                   " + Double.MaxClusterLength());
             Console.WriteLine("Кукушкой:    " + " " + cuckoo.GetSize() + "         " + cuckoo.GetCount() + "                   " + cuckoo.MaxClusterLength());
             Console.WriteLine("Случайное:   " + " " + random.GetSize() + "         " + random.GetCount() + "                   " + random.MaxClusterLength());
+        }
+
+        static void RunFunctionalTestOpenAddressingTable()
+        {
+            OpenAddressingHashTable<string, string> t = new OpenAddressingHashTable<string, string>("cuckoo");
+            t.Add("1", "Добавлено с ключом 1");
+            t.Add("2", "Добавлено с ключом 2");
+            t.Add("3", "Добавлено с ключом 3");
+
+            Console.WriteLine(t.GetCount());
+            Console.WriteLine(t.Find("2", out string v));
+            Console.WriteLine(v);
+            t.Remove("2");
+            Console.WriteLine(t.GetCount());
+            Console.WriteLine(t.Find("2", out v));
+            Console.WriteLine(v);
+
+            for (int i = 0; i < 7000; i++)
+            {
+                t.Add(i.ToString(), i.ToString());
+            }
+
+            Console.WriteLine(t.GetCount());
+            Console.WriteLine(t.Find("4951", out v));
+            Console.WriteLine(v);
         }
 
         static public OpenAddressingHashTable<int, int> FillOATable(int Size) { return FillOATable(Size, "quadratic"); }
