@@ -9,11 +9,18 @@ namespace AlgorithmLab6
         private int Size = 10000;
         private (T1 key, T2 value)?[] table;
         private int count;
+        private string probingMethod = "quadratic";
 
         public OpenAddressingHashTable()
         {
             table = new (T1, T2)?[Size];
             count = 0;
+        }
+        public OpenAddressingHashTable(string probingMethod)
+        {
+            table = new (T1, T2)?[Size];
+            count = 0;
+            if (probingMethod == "linear" || probingMethod == "quadratic" || probingMethod == "double") this.probingMethod = probingMethod;
         }
 
         public OpenAddressingHashTable(int NewSize)
@@ -58,9 +65,9 @@ namespace AlgorithmLab6
         }
 
         // Вставка элемента
-        public void Add(T1 key, T2 value, string probingMethod)
+        public void Add(T1 key, T2 value)
         {
-            if (count >= Size)
+            if (count >= Size * 0.95)
             {
                 Size *= 2;
                 Array.Resize(ref table, Size); ;
@@ -86,7 +93,7 @@ namespace AlgorithmLab6
                         throw new ArgumentException("Invalid probing method");
                 }
 
-                if (!table[index].HasValue) // 
+                if (!table[index].HasValue ) // 
                 {
                     table[index] = (key, value);
                     count++;

@@ -4,7 +4,7 @@ namespace AlgorithmLab6
 {
     public class ChainedHashTable<T1, T2> : IHashTable<T1, T2>
     {
-        public void Add(T1 key, T2 value, string probingMethod)
+        public void Add(T1 key, T2 value)
         {
             throw new NotImplementedException();
         }

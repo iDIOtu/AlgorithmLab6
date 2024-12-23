@@ -7,16 +7,21 @@ namespace AlgorithmLab6
     {
         static void Main(string[] args)
         {
-            RunTestOpenAddressingTable();
+            OpenAddressingHashTable<string, string> stringOATable = FillOATableWithStrings(35000);
+            Console.WriteLine(stringOATable.GetSize());
+            Console.WriteLine(stringOATable.GetCount());
+            Console.WriteLine(stringOATable.MaxClusterLength());
+            Console.WriteLine(stringOATable.Find("10000", out string v));
+            //RunTestOpenAddressingTable();
         }
 
         static void RunTestOpenAddressingTable()
         {
             OpenAddressingHashTable<string, string> hashTable = new OpenAddressingHashTable<string, string>();
             // Вставка элементов
-            hashTable.Add("2", "1", "quadratic");
-            hashTable.Add("2", "2", "quadratic");
-            hashTable.Add("3", "3", "quadratic");
+            hashTable.Add("2", "1");
+            hashTable.Add("2", "2");
+            hashTable.Add("3", "3");
 
             // Поиск элементов
             Console.WriteLine(hashTable.Find("2", out string foundedValue)); // True
@@ -40,7 +45,9 @@ namespace AlgorithmLab6
             Console.WriteLine(filledOATable.Find(9999, out LastValue)); // True       
             Console.WriteLine(filledOATable.Find(19999, out int expandedLastValue)); // True  
             Console.WriteLine("Key 0: " + FirstValue + " | Key 9999: " + LastValue + " | Key 19999: " + LastValue + " | Count: " + filledOATable.GetCount());
-            OpenAddressingHashTable<string, string> stringOATable = FillOATableWithStrings(500);
+            OpenAddressingHashTable<string, string> stringOATable = FillOATableWithStrings(10000);
+            Console.WriteLine(stringOATable.GetSize());
+            Console.WriteLine(stringOATable.GetCount());
             Console.WriteLine(stringOATable.MaxClusterLength());
         }
 
@@ -51,7 +58,7 @@ namespace AlgorithmLab6
             for (int i = 0; i < Size; i++)
             {
                 int value = random.Next(10000);
-                hashTable.Add(i, i, "quadratic");
+                hashTable.Add(i, i);
             }
             return hashTable;
         }
@@ -63,7 +70,7 @@ namespace AlgorithmLab6
             for (int i = 0; i < Size; i++)
             {
                 int value = random.Next(10000);
-                hashTable.Add(i.ToString(), i.ToString(), "quadratic");
+                hashTable.Add(i.ToString(), i.ToString());
             }
             return hashTable;
         }
