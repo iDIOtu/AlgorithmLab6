@@ -40,8 +40,8 @@ namespace AlgorithmLab6
             Console.WriteLine(filledOATable.Find(9999, out LastValue)); // True       
             Console.WriteLine(filledOATable.Find(19999, out int expandedLastValue)); // True  
             Console.WriteLine("Key 0: " + FirstValue + " | Key 9999: " + LastValue + " | Key 19999: " + LastValue + " | Count: " + filledOATable.GetCount());
-            filledOATable = FillOATable(500);
-            Console.WriteLine(filledOATable.MaxClusterLength());
+            OpenAddressingHashTable<string, string> stringOATable = FillOATableWithStrings(500);
+            Console.WriteLine(stringOATable.MaxClusterLength());
         }
 
         static public OpenAddressingHashTable<int, int> FillOATable(int Size)
@@ -52,6 +52,18 @@ namespace AlgorithmLab6
             {
                 int value = random.Next(10000);
                 hashTable.Add(i, i, "quadratic");
+            }
+            return hashTable;
+        }
+
+        static public OpenAddressingHashTable<string, string> FillOATableWithStrings(int Size)
+        {
+            OpenAddressingHashTable<string, string> hashTable = new OpenAddressingHashTable<string, string>();
+            Random random = new Random();
+            for (int i = 0; i < Size; i++)
+            {
+                int value = random.Next(10000);
+                hashTable.Add(i.ToString(), i.ToString(), "quadratic");
             }
             return hashTable;
         }
