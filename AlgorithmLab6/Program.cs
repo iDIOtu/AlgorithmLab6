@@ -7,6 +7,11 @@ namespace AlgorithmLab6
     {
         static void Main(string[] args)
         {
+            RunTestOpenAddressingTable();
+        }
+
+        static void RunTestOpenAddressingTable()
+        {
             OpenAddressingHashTable<string, string> hashTable = new OpenAddressingHashTable<string, string>();
             // Вставка элементов
             hashTable.Insert("2", "1");
@@ -15,11 +20,45 @@ namespace AlgorithmLab6
 
             // Поиск элементов
             Console.WriteLine(hashTable.Find("2", out string foundedValue)); // True
+            Console.WriteLine(foundedValue); // 1
             Console.WriteLine(hashTable.Find("4", out foundedValue)); // False
+            Console.WriteLine(foundedValue); // 404 -not found c:
 
             // Удаление элемента
             hashTable.Remove("2");
             Console.WriteLine(hashTable.Find("2", out foundedValue)); // False
+            Console.WriteLine(foundedValue); // not found
+
+            OpenAddressingHashTable<int, int> filledOATable = FillOATable(10000);
+            Console.WriteLine(filledOATable.Find(0, out int FirstValue)); // True
+            Console.WriteLine(filledOATable.Find(9999, out int LastValue)); // True       
+            Console.WriteLine("Key 0: " + FirstValue + " | Key 9999: " + LastValue + " | Count: " + filledOATable.GetCount());
+
+            Console.WriteLine("Overflow: ");
+            filledOATable = TableOverflow(filledOATable.GetSize()); // 20000 elements
+            Console.WriteLine(filledOATable.Find(0, out FirstValue)); // True
+            Console.WriteLine(filledOATable.Find(9999, out LastValue)); // True       
+            Console.WriteLine(filledOATable.Find(19999, out int expandedLastValue)); // True  
+            Console.WriteLine("Key 0: " + FirstValue + " | Key 9999: " + LastValue + " | Key 19999: " + LastValue + " | Count: " + filledOATable.GetCount());
+            filledOATable = FillOATable(500);
+            Console.WriteLine(filledOATable.MaxClusterLength());
+        }
+
+        static public OpenAddressingHashTable<int, int> FillOATable(int Size)
+        {
+            OpenAddressingHashTable<int, int> hashTable = new OpenAddressingHashTable<int, int>();
+            Random random = new Random();
+            for (int i = 0; i < Size; i++)
+            {
+                int value = random.Next(10000);
+                hashTable.Insert(i, i);
+            }
+            return hashTable;
+        }
+
+        static public OpenAddressingHashTable<int, int> TableOverflow(int Size)
+        {
+            return FillOATable(Size + 10000);
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AlgorithmLab6
 {
     internal class OpenAddressingHashTable<T1, T2> : IHashTable<T1, T2> where T1 : IComparable
     {
-        private const int Size = 10000;
+        private int Size = 10000;
         private (T1 key, T2 value)?[] table;
         private int count;
 
@@ -14,15 +16,26 @@ namespace AlgorithmLab6
             count = 0;
         }
 
+        public OpenAddressingHashTable(int NewSize)
+        {
+            Size = NewSize;
+            table = new (T1, T2)?[Size];
+            count = 0;
+        }
+
+        public int GetCount() {  return count; }
+        public int GetSize() { return Size; }
+
+
         // Метод хеширования
         private int Hash(int key)
         {
             return key % Size; 
         }
 
-        private int GenericHash(T1 key)
+        private int Hash(T1 key)
         {
-            return Math.Abs(key.GetHashCode()) % Size;
+            return Math.Abs(key.GetHashCode() % Size); // 
         }
 
         // Линейное исследование
@@ -45,16 +58,17 @@ namespace AlgorithmLab6
         }
 
         // Вставка элемента
-        public void Insert(T1 key, T2 value, string probingMethod = "linear")
+        public void Insert(T1 key, T2 value, string probingMethod = "quadratic")
         {
             if (count >= Size)
             {
-                throw new InvalidOperationException("Hash table is full");
+                Size *= 2;
+                Array.Resize(ref table, Size); ;
             }
 
             int i = 0;
             int index;
-            int hash = GenericHash(key);
+            int hash = Hash(key);
             do
             {
                 switch (probingMethod)
@@ -82,54 +96,6 @@ namespace AlgorithmLab6
                 i++;
             } while (true);
         }
-
-        // Поиск элемента
-        //public bool Search(int key)
-        //{
-        //    int i = 0;
-        //    int index;
-        //    do
-        //    {
-        //        index = LinearProbing(key, i); // Можно выбрать любой метод
-
-        //        if (table[index] == null)
-        //        {
-        //            return false; // Элемент не найден
-        //        }
-
-        //        if (table[index] == key)
-        //        {
-        //            return true; // Элемент найден
-        //        }
-
-        //        i++;
-        //    } while (true);
-        //}
-
-        // Удаление элемента
-        //public void Delete(int key)
-        //{
-        //    int i = 0;
-        //    int index;
-        //    do
-        //    {
-        //        index = LinearProbing(key, i); // Можно выбрать любой метод
-
-        //        if (table[index] == null)
-        //        {
-        //            throw new InvalidOperationException("Element not found");
-        //        }
-
-        //        if (table[index] == key)
-        //        {
-        //            table[index] = -1; // Помечаем элемент как удалённый
-        //            count--;
-        //            return;
-        //        }
-
-        //        i++;
-        //    } while (true);
-        //}
         public T2 Add(T1 key)
         {
             throw new NotImplementedException();
@@ -143,7 +109,7 @@ namespace AlgorithmLab6
         public bool Find(T1 key, out T2 value) // public bool Search(T1 key, out T2 value)
         {
             int i = 0;
-            int hash = GenericHash(key);
+            int hash = Hash(key);
             int index;
             do
             {
@@ -168,7 +134,7 @@ namespace AlgorithmLab6
         public void Remove(T1 key)
         {
             int i = 0;
-            int hash = GenericHash(key);
+            int hash = Hash(key);
             int index;
             do
             {
@@ -188,6 +154,36 @@ namespace AlgorithmLab6
 
                 i++;
             } while (true);
+        }
+
+        public int MaxClusterLength() {  return GetClusterLengths().Max(); }
+        public List<int> GetClusterLengths()
+        {
+            var clusters = new List<int>();
+            int currentClusterLength = 0;
+
+            foreach (var item in table)
+            {
+                if (item != null)
+                {
+                    currentClusterLength++;
+                }
+                else
+                {
+                    if (currentClusterLength > 0)
+                    {
+                        clusters.Add(currentClusterLength);
+                        currentClusterLength = 0;
+                    }
+                }
+            }
+
+            if (currentClusterLength > 0)
+            {
+                clusters.Add(currentClusterLength);
+            }
+
+            return clusters;
         }
     }
 }
