@@ -7,43 +7,42 @@ namespace AlgorithmLab6
     {
         static void Main(string[] args)
         {
-
+            RunTestOpenAddressingTable();
         }
 
         static void RunTestOpenAddressingTable()
         {
-            OpenAddressingHashTable<string, string> hashTable = new OpenAddressingHashTable<string, string>();
-            // Вставка элементов
-            hashTable.Add("2", "1");
-            hashTable.Add("2", "2");
-            hashTable.Add("3", "3");
+            int size = 10000;
+            Console.WriteLine("Открытая адресация. Тест 1: заполнение на 1/2 "); 
+            
+            OpenAddressingHashTable<string, string> linear = FillOATableWithStrings(size/2, "linear");
+            OpenAddressingHashTable<string, string> quadratic = FillOATableWithStrings(size / 2, "quadratic");
+            OpenAddressingHashTable<string, string> Double = FillOATableWithStrings(size / 2, "double");
+            OpenAddressingHashTable<string, string> cuckoo = FillOATableWithStrings(size / 2, "cuckoo");
+            OpenAddressingHashTable<string, string> random = FillOATableWithStrings(size / 2, "random");
 
-            // Поиск элементов
-            Console.WriteLine(hashTable.Find("2", out string foundedValue)); // True
-            Console.WriteLine(foundedValue); // 1
-            Console.WriteLine(hashTable.Find("4", out foundedValue)); // False
-            Console.WriteLine(foundedValue); // 404 -not found c:
+            Console.WriteLine("Исследование " + " Размер " + " Количество записей " + " Максимальный кластер");
+            Console.WriteLine("Линейное:    " + " " + linear.GetSize() + "         " + linear.GetCount() + "                   " + linear.MaxClusterLength());
+            Console.WriteLine("Квадратичное:" + " " + quadratic.GetSize() + "         " + quadratic.GetCount() + "                   " + quadratic.MaxClusterLength());
+            Console.WriteLine("Двойное:     " + " " + Double.GetSize() + "         " + Double.GetCount() + "                   " + Double.MaxClusterLength());
+            Console.WriteLine("Кукушкой:    " + " " + cuckoo.GetSize() + "         " + cuckoo.GetCount() + "                   " + cuckoo.MaxClusterLength());
+            Console.WriteLine("Случайное:   " + " " + random.GetSize() + "         " + random.GetCount() + "                   " + random.MaxClusterLength());
 
-            // Удаление элемента
-            hashTable.Remove("2");
-            Console.WriteLine(hashTable.Find("2", out foundedValue)); // False
-            Console.WriteLine(foundedValue); // not found
 
-            OpenAddressingHashTable<int, int> filledOATable = FillOATable(10000);
-            Console.WriteLine(filledOATable.Find(0, out int FirstValue)); // True
-            Console.WriteLine(filledOATable.Find(9999, out int LastValue)); // True       
-            Console.WriteLine("Key 0: " + FirstValue + " | Key 9999: " + LastValue + " | Count: " + filledOATable.GetCount());
+            Console.WriteLine("Открытая адресация. Тест 2: заполнение полностью ");
 
-            Console.WriteLine("Overflow: ");
-            filledOATable = TableOverflow(filledOATable.GetSize()); // 20000 elements
-            Console.WriteLine(filledOATable.Find(0, out FirstValue)); // True
-            Console.WriteLine(filledOATable.Find(9999, out LastValue)); // True       
-            Console.WriteLine(filledOATable.Find(19999, out int expandedLastValue)); // True  
-            Console.WriteLine("Key 0: " + FirstValue + " | Key 9999: " + LastValue + " | Key 19999: " + LastValue + " | Count: " + filledOATable.GetCount());
-            OpenAddressingHashTable<string, string> stringOATable = FillOATableWithStrings(10000);
-            Console.WriteLine(stringOATable.GetSize());
-            Console.WriteLine(stringOATable.GetCount());
-            Console.WriteLine(stringOATable.MaxClusterLength());
+            linear = FillOATableWithStrings(size, "linear");
+            quadratic = FillOATableWithStrings(size, "quadratic");
+            Double = FillOATableWithStrings(size, "double");
+            cuckoo = FillOATableWithStrings(size, "cuckoo");
+            random = FillOATableWithStrings(size, "random");
+
+            Console.WriteLine("Исследование " + " Размер " + " Количество записей " + " Максимальный кластер");
+            Console.WriteLine("Линейное:    " + " " + linear.GetSize() + "         " + linear.GetCount() + "                   " + linear.MaxClusterLength());
+            Console.WriteLine("Квадратичное:" + " " + quadratic.GetSize() + "         " + quadratic.GetCount() + "                   " + quadratic.MaxClusterLength());
+            Console.WriteLine("Двойное:     " + " " + Double.GetSize() + "         " + Double.GetCount() + "                   " + Double.MaxClusterLength());
+            Console.WriteLine("Кукушкой:    " + " " + cuckoo.GetSize() + "         " + cuckoo.GetCount() + "                   " + cuckoo.MaxClusterLength());
+            Console.WriteLine("Случайное:   " + " " + random.GetSize() + "         " + random.GetCount() + "                   " + random.MaxClusterLength());
         }
 
         static public OpenAddressingHashTable<int, int> FillOATable(int Size) { return FillOATable(Size, "quadratic"); }

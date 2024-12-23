@@ -90,6 +90,8 @@ namespace AlgorithmLab6
                     return HashMultiplication(key, i);
                 case "division":
                     return HashDivision(key, i);
+                case "multiplication2":
+                    return HashPrimeMultiplication(key);
                 default:
                     throw new ArgumentException("Invalid probing method");
             }
@@ -116,6 +118,26 @@ namespace AlgorithmLab6
             return Math.Abs(hash) % Size + 1; 
         }
 
+        private int HashPrimeMultiplication(T1 key)
+        {
+            const int prime = 16777619; // простое число
+            int hash = 0;
+
+            if (key is string strKey)
+            {
+                foreach (char c in strKey)
+                {
+                    hash = (hash * prime) ^ c; // примитивный XOR с умножением
+                }
+            }
+            else
+            {
+                hash = key.GetHashCode();
+            }
+
+            return Math.Abs(hash) % Size;
+        }
+
         // Линейное исследование
         private int LinearProbing(int key, int i)
         {
@@ -135,6 +157,16 @@ namespace AlgorithmLab6
             return (Hash(key) + i * hash2) % Size;
         }
 
+        private int RandomProbing(int key, int i)
+        {
+            if (i >= Size)
+            {
+                return -2;
+            }
+            Random random = new Random();
+            return (key + random.Next(0, Size)) % Size;
+        }
+
         // Вставка элемента
         public void Add(T1 key, T2 value)
         {
@@ -146,7 +178,7 @@ namespace AlgorithmLab6
             if (count >= Size * 0.95)
             {
                 Size *= 2;
-                Array.Resize(ref table, Size); ;
+                Array.Resize(ref table, Size);
             }
 
             int i = 0;
@@ -155,6 +187,12 @@ namespace AlgorithmLab6
             do
             {
                 index = ProbingMethodSwitch(hash, i);
+                if (index == -2) //ресайз для рандома
+                {
+                    Size *= 2;
+                    Array.Resize(ref table, Size);
+                    index = ProbingMethodSwitch(hash, i);
+                }
                 if (!table[index].HasValue ) // 
                 {
                     table[index] = (key, value);
@@ -219,6 +257,9 @@ namespace AlgorithmLab6
                 case "double":
                     index = DoubleHash(hash, i);
                     break;
+                case "random":
+                    index = RandomProbing(hash, i);
+                    break;
                 default:
                     throw new ArgumentException("Invalid probing method");
             }
@@ -237,16 +278,15 @@ namespace AlgorithmLab6
 
         public bool Find(T1 key, out T2 value) // public bool Search(T1 key, out T2 value)
         {
+            if (probingMethod == "random") return FindRandomly(key, out value);
             int i = 0;
             int hash = Hash(key, i);
             int index;
             do
             {
                 index = ProbingMethodSwitch(hash, i);
-                if (index == -1)
-                { 
-                    return FindCuckoo(key, out value);  
-                }
+                if (index == -1) return FindCuckoo(key, out value);  
+
                 if (!table[index].HasValue)
                 {
                     value = default;
@@ -285,26 +325,50 @@ namespace AlgorithmLab6
                 index = HashDivision(key, i);
                 i++;
             }
+        }
 
+        private bool FindRandomly(T1 key, out T2 value)
+        {
+            int i = 0;
+            int hash = Hash(key, i);
+            while (i < Size)
+            {
+                int index = RandomProbing(hash, i);
+                if (!table[index].HasValue) continue;
+                if (table[index].Value.key.Equals(key))
+                {
+                    value = table[index].Value.value;
+                    return true;
+                }
+            }
+            value = default;
+            return false;
         }
 
         public void Remove(T1 key)
         {
+            if (probingMethod == "random")
+            {
+                if (!RemoveRandomly(key)) Console.WriteLine("Элемент не найден"); return;
+            }
             int i = 0;
             int hash = Hash(key, i);
             int index;
             do
             {
-                index = LinearProbing(hash, i);
-
+                index = ProbingMethodSwitch(hash, i);
+                if (index == -1)
+                {
+                    if (!RemoveCuckoo(key)) Console.WriteLine("Элемент не найден"); return;
+                }
                 if (!table[index].HasValue)
                 {
-                    throw new InvalidOperationException("Element not found");
+                    Console.WriteLine("Элемент не найден"); return;
                 }
 
                 if (table[index].Value.key.Equals(key))
                 {
-                    table[index] = null; // Удаляем элемент
+                    table[index] = null; 
                     count--;
                     return;
                 }
@@ -313,6 +377,50 @@ namespace AlgorithmLab6
             } while (true);
         }
 
+        private bool RemoveCuckoo(T1 key)
+        {
+            int i = 0;
+            int index = HashMultiplication(key, 0);
+            while (true)
+            {
+                if (i >= MaxAttempts) index = HashMultiplication(index, i);
+                if (index >= Size) index %= Size;
+                if (!table[index].HasValue)
+                {
+                    return false; // Элемент не найден
+                }
+                if (table[index].Value.key.Equals(key))
+                {
+                    table[index] = null;
+                    count--;
+                    return true;
+                }
+                // Пробуем вторую хеш-функцию
+                index = HashDivision(key, i);
+                i++;
+            }
+        }
+
+        private bool RemoveRandomly(T1 key)
+        {
+            int i = 0;
+            int hash = Hash(key, i);
+            while (i < Size)
+            {
+                int index = RandomProbing(hash, i);
+                if (!table[index].HasValue)
+                {
+                    continue;
+                }
+                if (table[index].Value.key.Equals(key))
+                {
+                    table[index] = null;
+                    count--;
+                    return true;
+                }
+            }
+            return false;
+        }
         public int MaxClusterLength() {  return GetClusterLengths().Max(); }
         public List<int> GetClusterLengths()
         {
@@ -345,13 +453,13 @@ namespace AlgorithmLab6
 
         private bool IsProbingMethod(string probingMethod)
         {
-            if (probingMethod == "linear" || probingMethod == "quadratic" || probingMethod == "double" || probingMethod == "cuckoo") return true;
+            if (probingMethod == "linear" || probingMethod == "quadratic" || probingMethod == "double" || probingMethod == "cuckoo" || probingMethod == "random") return true;
             else return false;
         }
 
         private bool IsHashFunction(string hashFunction)
         {
-            if (hashFunction == "division" || hashFunction == "multiplication" ) return true;
+            if (hashFunction == "division" || hashFunction == "multiplication" || hashFunction == "multiplication2") return true;
             else return false;
         }
     }
