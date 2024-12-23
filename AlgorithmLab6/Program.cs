@@ -7,7 +7,7 @@ namespace AlgorithmLab6
     {
         static void Main(string[] args)
         {
-            
+
         }
 
         static void RunTestOpenAddressingTable()
@@ -54,7 +54,7 @@ namespace AlgorithmLab6
             for (int i = 0; i < Size; i++)
             {
                 int value = random.Next(10000);
-                hashTable.Add(i, i);
+                hashTable.Add(i, value);
             }
             return hashTable;
         }
@@ -63,10 +63,8 @@ namespace AlgorithmLab6
         static public OpenAddressingHashTable<string, string> FillOATableWithStrings(int Size, string probingMethod)
         {
             OpenAddressingHashTable<string, string> hashTable = new OpenAddressingHashTable<string, string>(probingMethod);
-            Random random = new Random();
             for (int i = 0; i < Size; i++)
             {
-                int value = random.Next(10000);
                 hashTable.Add(i.ToString(), i.ToString());
             }
             return hashTable;

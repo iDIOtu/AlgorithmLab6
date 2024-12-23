@@ -34,7 +34,7 @@ namespace AlgorithmLab6
             if (IsProbingMethod(probingMethod)) this.probingMethod = probingMethod;
             else Console.WriteLine("Метод не найден");
             if (IsHashFunction(hashFunction)) this.hashFunction = hashFunction;
-            else Console.WriteLine("Хэшфункция не найден");
+            else Console.WriteLine("Хэшфункция не найдена");
         }
 
         public OpenAddressingHashTable(int NewSize)
@@ -67,6 +67,11 @@ namespace AlgorithmLab6
         public string GetHashFunction() { return hashFunction; }
         public int GetCount() {  return count; }
         public int GetSize() { return Size; }
+        public void SetSize(int Size) 
+        { 
+            Array.Resize(ref table, Size); 
+            this.Size = Size;
+        }
 
 
         // Метод хеширования
@@ -161,13 +166,14 @@ namespace AlgorithmLab6
             } while (true);
         }
 
-        private int MaxAttempts = 30;
-        public void AddCuckoo(T1 key, T2 value)
+        private readonly int MaxAttempts = 30;
+        private void AddCuckoo(T1 key, T2 value)
         {
-            if (count >= Size * 0.62)
+            if (count >= Size)
             {
-                Size *= 2;
-                Array.Resize(ref table, Size); ;
+                Console.WriteLine("Таблица переполнена. Добавление методом кукушки невозможно"); // У кукушки  коэффициент загрузки меньше 50 %
+                //Size *= 2;
+                //Array.Resize(ref table, Size); 
             }
 
             int i = 0;
@@ -257,11 +263,19 @@ namespace AlgorithmLab6
             } while (true);
         }
 
-        public bool FindCuckoo(T1 key, out T2 value) 
+        private bool FindCuckoo(T1 key, out T2 value) 
         {
+            int i = 0;
             int index = HashMultiplication(key, 0);
-            for (int i = 0; i < MaxAttempts; i++)
+            while (true) 
             {
+                if (i >= MaxAttempts) index = HashMultiplication(index, i);
+                if (index >= Size) index %= Size;
+                if (!table[index].HasValue)
+                {
+                    value = default;
+                    return false; // Элемент не найден
+                }
                 if (table[index].Value.key.Equals(key))
                 {
                     value = table[index].Value.value;
@@ -269,9 +283,9 @@ namespace AlgorithmLab6
                 }
                 // Пробуем вторую хеш-функцию
                 index = HashDivision(key, i);
+                i++;
             }
-            value = default;
-            return false; // Элемент не найден
+
         }
 
         public void Remove(T1 key)
