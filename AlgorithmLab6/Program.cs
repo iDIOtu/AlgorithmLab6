@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System;
-using System.Security.AccessControl;
+using System.Diagnostics;
 
 namespace AlgorithmLab6
 {
@@ -212,6 +212,19 @@ namespace AlgorithmLab6
         /*static void RunTestOpenAddressingTable()
         {
             int size = 10000;
+            Console.WriteLine("Открытая адресация. Тест 1: заполнение на 1/2 ");
+            Stopwatch t1 = Stopwatch.StartNew();
+            OpenAddressingHashTable<string, string> linear = FillOATableWithStrings(size/2, "linear");
+            t1.Stop(); Stopwatch t2 = Stopwatch.StartNew();
+            OpenAddressingHashTable<string, string> quadratic = FillOATableWithStrings(size / 2, "quadratic");
+            t2.Stop(); Stopwatch t3 = Stopwatch.StartNew();
+            OpenAddressingHashTable<string, string> Double = FillOATableWithStrings(size / 2, "double");
+            t3.Stop(); Stopwatch t4 = Stopwatch.StartNew();
+            OpenAddressingHashTable<string, string> cuckoo = FillOATableWithStrings(size / 2, "cuckoo");
+            t4.Stop(); Stopwatch t5 = Stopwatch.StartNew();
+            OpenAddressingHashTable<string, string> Fibonacci = FillOATableWithStrings(size / 2, "Fibonacci");
+            t5.Stop(); Stopwatch t6 = Stopwatch.StartNew();
+            OpenAddressingHashTable<string, string> random = FillOATableWithStrings(size / 2, "random");
             Console.WriteLine("Открытая адресация. Тест 1: заполнение на 1/2 "); 
             
             HashTableOpen<string, string> linear = FillOATableWithStrings(size/2, "linear");
@@ -219,29 +232,33 @@ namespace AlgorithmLab6
             HashTableOpen<string, string> Double = FillOATableWithStrings(size / 2, "double");
             HashTableOpen<string, string> cuckoo = FillOATableWithStrings(size / 2, "cuckoo");
             HashTableOpen<string, string> random = FillOATableWithStrings(size / 2, "random");
+            t5.Stop();
 
-            Console.WriteLine("Исследование " + " Размер " + " Количество записей " + " Максимальный кластер");
-            Console.WriteLine("Линейное:    " + " " + linear.GetSize() + "         " + linear.GetCount() + "                   " + linear.MaxClusterLength());
-            Console.WriteLine("Квадратичное:" + " " + quadratic.GetSize() + "         " + quadratic.GetCount() + "                   " + quadratic.MaxClusterLength());
-            Console.WriteLine("Двойное:     " + " " + Double.GetSize() + "         " + Double.GetCount() + "                   " + Double.MaxClusterLength());
-            Console.WriteLine("Кукушкой:    " + " " + cuckoo.GetSize() + "         " + cuckoo.GetCount() + "                   " + cuckoo.MaxClusterLength());
-            Console.WriteLine("Случайное:   " + " " + random.GetSize() + "         " + random.GetCount() + "                   " + random.MaxClusterLength());
-
+            Console.WriteLine("Исследование " + " Размер " + " Количество записей " + " Максимальный кластер" + " Максимальное число итераций для вставки " + " t ");
+            Console.WriteLine("Линейное:    " + " " + linear.GetSize() + "         " + linear.GetCount() + "                       " + linear.MaxClusterLength() + "                   " + linear.GetMaxI() + "                    " + t1.Elapsed.TotalMilliseconds);
+            Console.WriteLine("Квадратичное:" + " " + quadratic.GetSize() + "         " + quadratic.GetCount() + "                       " + quadratic.MaxClusterLength() + "                   " + quadratic.GetMaxI() + "                    " + t2.Elapsed.TotalMilliseconds);
+            Console.WriteLine("Двойное:     " + " " + Double.GetSize() + "         " + Double.GetCount() + "                       " + Double.MaxClusterLength() + "                   " + Double.GetMaxI() + "                    " + t3.Elapsed.TotalMilliseconds);
+            Console.WriteLine("Кукушкой:    " + " " + cuckoo.GetSize() + "         " + cuckoo.GetCount() + "                       " + cuckoo.MaxClusterLength() + "                   " + cuckoo.GetMaxI() + "                    " + t4.Elapsed.TotalMilliseconds);
+            Console.WriteLine("Фибоначчи:   " + " " + Fibonacci.GetSize() + "         " + Fibonacci.GetCount() + "                       " + Fibonacci.MaxClusterLength() + "                   " + Fibonacci.GetMaxI() + "                    " + t5.Elapsed.TotalMilliseconds);
+            Console.WriteLine("Случайное:   " + " " + random.GetSize() + "         " + random.GetCount() + "                       " + random.MaxClusterLength() + "                   " + random.GetMaxI() + "                    " + t6.Elapsed.TotalMilliseconds);
 
             Console.WriteLine("Открытая адресация. Тест 2: заполнение полностью ");
+            t1.Restart();
+            linear = FillOATableWithStrings(size, "linear"); t1.Stop(); t2.Restart(); 
+            quadratic = FillOATableWithStrings(size, "quadratic"); t2.Stop();  t3.Restart();
+            Double = FillOATableWithStrings(size, "double");t3.Stop(); t4.Restart();
+            cuckoo = FillOATableWithStrings(size, "cuckoo"); t4.Stop(); t5.Restart();
+            Fibonacci = FillOATableWithStrings(size, "Fibonacci"); t5.Stop(); t6.Restart();
+            random = FillOATableWithStrings(size, "random"); 
+            t6.Stop();
 
-            linear = FillOATableWithStrings(size, "linear");
-            quadratic = FillOATableWithStrings(size, "quadratic");
-            Double = FillOATableWithStrings(size, "double");
-            cuckoo = FillOATableWithStrings(size, "cuckoo");
-            random = FillOATableWithStrings(size, "random");
-
-            Console.WriteLine("Исследование " + " Размер " + " Количество записей " + " Максимальный кластер");
-            Console.WriteLine("Линейное:    " + " " + linear.GetSize() + "         " + linear.GetCount() + "                   " + linear.MaxClusterLength());
-            Console.WriteLine("Квадратичное:" + " " + quadratic.GetSize() + "         " + quadratic.GetCount() + "                   " + quadratic.MaxClusterLength());
-            Console.WriteLine("Двойное:     " + " " + Double.GetSize() + "         " + Double.GetCount() + "                   " + Double.MaxClusterLength());
-            Console.WriteLine("Кукушкой:    " + " " + cuckoo.GetSize() + "         " + cuckoo.GetCount() + "                   " + cuckoo.MaxClusterLength());
-            Console.WriteLine("Случайное:   " + " " + random.GetSize() + "         " + random.GetCount() + "                   " + random.MaxClusterLength());
+            Console.WriteLine("Исследование " + " Размер " + " Количество записей " + " Максимальный кластер" + " Максимальное число итераций для вставки " + " t ");
+            Console.WriteLine("Линейное:    " + " " + linear.GetSize() + "         " + linear.GetCount() + "                       " + linear.MaxClusterLength() + "                   " + linear.GetMaxI() + "                    " + t1.Elapsed.TotalMilliseconds);
+            Console.WriteLine("Квадратичное:" + " " + quadratic.GetSize() + "         " + quadratic.GetCount() + "                       " + quadratic.MaxClusterLength() + "                   " + quadratic.GetMaxI() + "                    " + t2.Elapsed.TotalMilliseconds);
+            Console.WriteLine("Двойное:     " + " " + Double.GetSize() + "         " + Double.GetCount() + "                       " + Double.MaxClusterLength() + "                   " + Double.GetMaxI() + "                    " + t3.Elapsed.TotalMilliseconds);
+            Console.WriteLine("Кукушкой:    " + " " + cuckoo.GetSize() + "         " + cuckoo.GetCount() + "                       " + cuckoo.MaxClusterLength() + "                   " + cuckoo.GetMaxI() + "                    " + t4.Elapsed.TotalMilliseconds);
+            Console.WriteLine("Фибоначчи:   " + " " + Fibonacci.GetSize() + "         " + Fibonacci.GetCount() + "                       " + Fibonacci.MaxClusterLength() + "                   " + Fibonacci.GetMaxI() + "                    " + t5.Elapsed.TotalMilliseconds);
+            Console.WriteLine("Случайное:   " + " " + random.GetSize() + "         " + random.GetCount() + "                       " + random.MaxClusterLength() + "                   " + random.GetMaxI() + "                    " + t6.Elapsed.TotalMilliseconds);
         }
 
         static void RunFunctionalTestOpenAddressingTable()
