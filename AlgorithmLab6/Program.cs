@@ -20,14 +20,16 @@ namespace AlgorithmLab6
             OpenAddressingHashTable<string, string> quadratic = FillOATableWithStrings(size / 2, "quadratic");
             OpenAddressingHashTable<string, string> Double = FillOATableWithStrings(size / 2, "double");
             OpenAddressingHashTable<string, string> cuckoo = FillOATableWithStrings(size / 2, "cuckoo");
+            OpenAddressingHashTable<string, string> Fibonacci = FillOATableWithStrings(size / 2, "Fibonacci");
             OpenAddressingHashTable<string, string> random = FillOATableWithStrings(size / 2, "random");
 
-            Console.WriteLine("Исследование " + " Размер " + " Количество записей " + " Максимальный кластер");
-            Console.WriteLine("Линейное:    " + " " + linear.GetSize() + "         " + linear.GetCount() + "                   " + linear.MaxClusterLength());
-            Console.WriteLine("Квадратичное:" + " " + quadratic.GetSize() + "         " + quadratic.GetCount() + "                   " + quadratic.MaxClusterLength());
-            Console.WriteLine("Двойное:     " + " " + Double.GetSize() + "         " + Double.GetCount() + "                   " + Double.MaxClusterLength());
-            Console.WriteLine("Кукушкой:    " + " " + cuckoo.GetSize() + "         " + cuckoo.GetCount() + "                   " + cuckoo.MaxClusterLength());
-            Console.WriteLine("Случайное:   " + " " + random.GetSize() + "         " + random.GetCount() + "                   " + random.MaxClusterLength());
+            Console.WriteLine("Исследование " + " Размер " + " Количество записей " + " Максимальный кластер" + " Максимальное число итераций для вставки");
+            Console.WriteLine("Линейное:    " + " " + linear.GetSize() + "         " + linear.GetCount() + "                   " + linear.MaxClusterLength() + "                   " + linear.GetMaxI());
+            Console.WriteLine("Квадратичное:" + " " + quadratic.GetSize() + "         " + quadratic.GetCount() + "                   " + quadratic.MaxClusterLength() + "                   " + quadratic.GetMaxI());
+            Console.WriteLine("Двойное:     " + " " + Double.GetSize() + "         " + Double.GetCount() + "                   " + Double.MaxClusterLength() + "                   " + Double.GetMaxI());
+            Console.WriteLine("Кукушкой:    " + " " + cuckoo.GetSize() + "         " + cuckoo.GetCount() + "                   " + cuckoo.MaxClusterLength() + "                   " + cuckoo.GetMaxI());
+            Console.WriteLine("Фибоначчи:   " + " " + Fibonacci.GetSize() + "         " + Fibonacci.GetCount() + "                   " + Fibonacci.MaxClusterLength() + "                   " + Fibonacci.GetMaxI());
+            Console.WriteLine("Случайное:   " + " " + random.GetSize() + "         " + random.GetCount() + "                   " + random.MaxClusterLength() + "                   " + random.GetMaxI());
 
 
             Console.WriteLine("Открытая адресация. Тест 2: заполнение полностью ");
@@ -36,14 +38,16 @@ namespace AlgorithmLab6
             quadratic = FillOATableWithStrings(size, "quadratic");
             Double = FillOATableWithStrings(size, "double");
             cuckoo = FillOATableWithStrings(size, "cuckoo");
+            Fibonacci = FillOATableWithStrings(size, "Fibonacci");
             random = FillOATableWithStrings(size, "random");
 
-            Console.WriteLine("Исследование " + " Размер " + " Количество записей " + " Максимальный кластер");
-            Console.WriteLine("Линейное:    " + " " + linear.GetSize() + "         " + linear.GetCount() + "                   " + linear.MaxClusterLength());
-            Console.WriteLine("Квадратичное:" + " " + quadratic.GetSize() + "         " + quadratic.GetCount() + "                   " + quadratic.MaxClusterLength());
-            Console.WriteLine("Двойное:     " + " " + Double.GetSize() + "         " + Double.GetCount() + "                   " + Double.MaxClusterLength());
-            Console.WriteLine("Кукушкой:    " + " " + cuckoo.GetSize() + "         " + cuckoo.GetCount() + "                   " + cuckoo.MaxClusterLength());
-            Console.WriteLine("Случайное:   " + " " + random.GetSize() + "         " + random.GetCount() + "                   " + random.MaxClusterLength());
+            Console.WriteLine("Исследование " + " Размер " + " Количество записей " + " Максимальный кластер" + " Максимальное число итераций для вставки");
+            Console.WriteLine("Линейное:    " + " " + linear.GetSize() + "         " + linear.GetCount() + "                   " + linear.MaxClusterLength() + "                   " + linear.GetMaxI());
+            Console.WriteLine("Квадратичное:" + " " + quadratic.GetSize() + "         " + quadratic.GetCount() + "                   " + quadratic.MaxClusterLength() + "                   " + quadratic.GetMaxI());
+            Console.WriteLine("Двойное:     " + " " + Double.GetSize() + "         " + Double.GetCount() + "                   " + Double.MaxClusterLength() + "                   " + Double.GetMaxI());
+            Console.WriteLine("Кукушкой:    " + " " + cuckoo.GetSize() + "         " + cuckoo.GetCount() + "                   " + cuckoo.MaxClusterLength() + "                   " + cuckoo.GetMaxI());
+            Console.WriteLine("Фибоначчи:   " + " " + Fibonacci.GetSize() + "         " + Fibonacci.GetCount() + "                   " + Fibonacci.MaxClusterLength() + "                   " + Fibonacci.GetMaxI());
+            Console.WriteLine("Случайное:   " + " " + random.GetSize() + "         " + random.GetCount() + "                   " + random.MaxClusterLength() + "                   " + random.GetMaxI());
         }
 
         static void RunFunctionalTestOpenAddressingTable()

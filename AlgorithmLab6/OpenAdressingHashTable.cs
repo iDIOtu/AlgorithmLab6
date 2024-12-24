@@ -11,6 +11,7 @@ namespace AlgorithmLab6
         private int Size = 10000;
         private (T1 key, T2 value)?[] table;
         private int count;
+        private int maxI = 0;
         private string probingMethod = "quadratic";
         private string hashFunction = "multiplication";
 
@@ -66,6 +67,7 @@ namespace AlgorithmLab6
         }
         public string GetHashFunction() { return hashFunction; }
         public int GetCount() {  return count; }
+        public int GetMaxI() { return maxI; }
         public int GetSize() { return Size; }
         public void SetSize(int Size) 
         { 
@@ -157,6 +159,23 @@ namespace AlgorithmLab6
             return (Hash(key) + i * hash2) % Size;
         }
 
+        private int FibonacciProbing(int key, int i)
+        {
+            // Используем формулу Фибоначчи: F(n) = F(n-1) + F(n-2)
+            // Для i = 0 и i = 1 возвращаем 1
+            if (i == 0) return (key + i) % Size; 
+            if (i == 1) return (key + i) % Size;
+
+            int a = 1, b = 1, f = 0;
+            for (int j = 2; j <= i; j++)
+            {
+                f = a + b;
+                a = b;
+                b = f;
+            }
+            return Math.Abs(key + i * f) % Size;
+        }
+
         private int RandomProbing(int key, int i)
         {
             if (i >= Size)
@@ -195,6 +214,7 @@ namespace AlgorithmLab6
                 }
                 if (!table[index].HasValue ) // 
                 {
+                    if (i > maxI) maxI = i++;
                     table[index] = (key, value);
                     count++;
                     return;
@@ -215,6 +235,7 @@ namespace AlgorithmLab6
             }
 
             int i = 0;
+            int totalAttempts = 0;
             int index = HashMultiplication(key, i);
             
             while (count < Size)
@@ -224,6 +245,7 @@ namespace AlgorithmLab6
                 if (!table[index].HasValue) // Если ячейка пустая
                 {
                     table[index] = (key, value);
+                    if (totalAttempts > maxI) maxI = totalAttempts++;
                     count++;
                     return;
                 }
@@ -236,6 +258,7 @@ namespace AlgorithmLab6
                     value = tempValue; // ... и значение
                     index = HashDivision(key, i); // Используем вторую хеш-функцию
                 }
+                totalAttempts++;
                 i++;
             }
         }
@@ -256,6 +279,9 @@ namespace AlgorithmLab6
                     break;
                 case "double":
                     index = DoubleHash(hash, i);
+                    break;
+                case "Fibonacci":
+                    index = FibonacciProbing(hash, i);
                     break;
                 case "random":
                     index = RandomProbing(hash, i);
@@ -453,7 +479,7 @@ namespace AlgorithmLab6
 
         private bool IsProbingMethod(string probingMethod)
         {
-            if (probingMethod == "linear" || probingMethod == "quadratic" || probingMethod == "double" || probingMethod == "cuckoo" || probingMethod == "random") return true;
+            if (probingMethod == "linear" || probingMethod == "quadratic" || probingMethod == "double" || probingMethod == "cuckoo" || probingMethod == "Fibonacci" || probingMethod == "random") return true;
             else return false;
         }
 
