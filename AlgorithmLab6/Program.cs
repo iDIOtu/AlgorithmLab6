@@ -92,8 +92,7 @@ namespace AlgorithmLab6
             else
             {
                 Console.Clear();
-                Console.WriteLine("(1) Linear probing\n(2) Quadratic Probing\n(3) Double Hash\n(4) Random Probing\n(5) Cuckoo\n(6) Fibonacci\n(7) Назад");
-                var table = new HashTableOpen<string, string>();
+                Console.WriteLine("(1) Division Hash\n(2) Multiplication Hash\n(3) Xor Hash\n(4) Назад");
                 while (true)
                 {
                     string a = Console.ReadLine();
@@ -101,30 +100,15 @@ namespace AlgorithmLab6
                     switch (a)
                     {
                         case "1":
-                            table = new HashTableOpen<string, string>("linear");
-                            Actions(table);
+                            Open("division");
                             break;
                         case "2":
-                            table = new HashTableOpen<string, string>("quadratic");
-                            Actions(table);
+                            Open("multiplication");
                             break;
                         case "3":
-                            table = new HashTableOpen<string, string>("double");
-                            Actions(table);
+                            Open("multiplication2");
                             break;
                         case "4":
-                            table = new HashTableOpen<string, string>("random");
-                            Actions(table);
-                            break;
-                        case "5":
-                            table = new HashTableOpen<string, string>("cuckoo");
-                            Actions(table);
-                            break;
-                        case "6":
-                            table = new HashTableOpen<string, string>("Fibonacci");
-                            Actions(table);
-                            break;
-                        case "7":
                             Mainview();
                             break;
                         default:
@@ -133,6 +117,51 @@ namespace AlgorithmLab6
                     }
 
                     
+                }
+            }
+        }
+
+        private static void Open(string hash)
+        {
+            Console.Clear();
+            Console.WriteLine("(1) Linear probing\n(2) Quadratic Probing\n(3) Double Hash\n(4) Random Probing\n(5) Cuckoo\n(6) Fibonacci\n(7) Назад");
+            var table = new HashTableOpen<string, string>();
+            while (true)
+            {
+                string a = Console.ReadLine();
+
+                switch (a)
+                {
+                    case "1":
+                        table = new HashTableOpen<string, string>("linear", hash);
+                        Actions(table);
+                        break;
+                    case "2":
+                        table = new HashTableOpen<string, string>("quadratic", hash);
+                        Actions(table);
+                        break;
+                    case "3":
+                        table = new HashTableOpen<string, string>("double", hash);
+                        Actions(table);
+                        break;
+                    case "4":
+                        table = new HashTableOpen<string, string>("random", hash);
+                        Actions(table);
+                        break;
+                    case "5":
+                        table = new HashTableOpen<string, string>("cuckoo", hash);
+                        Actions(table);
+                        break;
+                    case "6":
+                        table = new HashTableOpen<string, string>("Fibonacci", hash);
+                        Actions(table);
+                        break;
+                    case "7":
+                        Mainview();
+                        break;
+                    default:
+                        Console.WriteLine("Введите корректное значение!");
+                        break;
                 }
             }
         }
