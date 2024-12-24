@@ -92,7 +92,7 @@ namespace AlgorithmLab6
             else
             {
                 Console.Clear();
-                Console.WriteLine("(1) Linear probing\n(2) Quadratic Probing\n(3) Double Hash\n(4) Random Probing\n(5) Cuckoo\n(6) Назад");
+                Console.WriteLine("(1) Linear probing\n(2) Quadratic Probing\n(3) Double Hash\n(4) Random Probing\n(5) Cuckoo\n(6) Fibonacci\n(7) Назад");
                 var table = new HashTableOpen<string, string>();
                 while (true)
                 {
@@ -121,6 +121,10 @@ namespace AlgorithmLab6
                             Actions(table);
                             break;
                         case "6":
+                            table = new HashTableOpen<string, string>("Fibonacci");
+                            Actions(table);
+                            break;
+                        case "7":
                             Mainview();
                             break;
                         default:
