@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Security.Policy;
 
 namespace AlgorithmLab6
 {
-    internal class OpenAddressingHashTable<T1, T2> : IHashTable<T1, T2> where T1 : IComparable
+    public class HashTableOpen<T1, T2> : HashTable<T1, T2>
     {
         private int Size = 10000;
         private (T1 key, T2 value)?[] table;
@@ -14,12 +12,12 @@ namespace AlgorithmLab6
         private string probingMethod = "quadratic";
         private string hashFunction = "multiplication";
 
-        public OpenAddressingHashTable()
+        public HashTableOpen()
         {
             table = new (T1, T2)?[Size];
             count = 0;
         }
-        public OpenAddressingHashTable(string probingMethod)
+        public HashTableOpen(string probingMethod)
         {
             table = new (T1, T2)?[Size];
             count = 0;
@@ -27,7 +25,7 @@ namespace AlgorithmLab6
             else Console.WriteLine("Метод не найден");
         }
 
-        public OpenAddressingHashTable(string probingMethod, string hashFunction)
+        public HashTableOpen(string probingMethod, string hashFunction)
         {
             table = new (T1, T2)?[Size];
             count = 0;
@@ -37,11 +35,106 @@ namespace AlgorithmLab6
             else Console.WriteLine("Хэшфункция не найдена");
         }
 
-        public OpenAddressingHashTable(int NewSize)
+        public HashTableOpen(int NewSize)
         {
             Size = NewSize;
             table = new (T1, T2)?[Size];
             count = 0;
+        }
+
+        public override void Add(T1 key, T2 value)
+        {
+            if (probingMethod == "cuckoo")
+            {
+                AddCuckoo(key, value);
+                return;
+            }
+            if (count >= Size * 0.95)
+            {
+                Size *= 2;
+                Array.Resize(ref table, Size);
+            }
+
+            int i = 0;
+            int index;
+            int hash = Hash(key, i);
+            do
+            {
+                index = ProbingMethodSwitch(hash, i);
+                if (index == -2) //ресайз для рандома
+                {
+                    Size *= 2;
+                    Array.Resize(ref table, Size);
+                    index = ProbingMethodSwitch(hash, i);
+                }
+                if (!table[index].HasValue)
+                {
+                    table[index] = (key, value);
+                    count++;
+                    return;
+                }
+
+                i++;
+            } while (true);
+        }
+
+        public override bool Find(T1 key, out T2 value)
+        {
+            if (probingMethod == "random") return FindRandomly(key, out value);
+            int i = 0;
+            int hash = Hash(key, i);
+            int index;
+            do
+            {
+                index = ProbingMethodSwitch(hash, i);
+                if (index == -1) return FindCuckoo(key, out value);
+
+                if (!table[index].HasValue)
+                {
+                    value = default;
+                    return false; // Элемент не найден
+                }
+
+                if (table[index].Value.key.Equals(key))
+                {
+                    value = table[index].Value.value; // Элемент найден
+                    return true;
+                }
+
+                i++;
+            } while (true);
+        }
+
+        public override void Remove(T1 key)
+        {
+            if (probingMethod == "random")
+            {
+                if (!RemoveRandomly(key)) Console.WriteLine("Элемент не найден"); return;
+            }
+            int i = 0;
+            int hash = Hash(key, i);
+            int index;
+            do
+            {
+                index = ProbingMethodSwitch(hash, i);
+                if (index == -1)
+                {
+                    if (!RemoveCuckoo(key)) Console.WriteLine("Элемент не найден"); return;
+                }
+                if (!table[index].HasValue)
+                {
+                    Console.WriteLine("Элемент не найден"); return;
+                }
+
+                if (table[index].Value.key.Equals(key))
+                {
+                    table[index] = null;
+                    count--;
+                    return;
+                }
+
+                i++;
+            } while (true);
         }
 
         public bool SetProbingMethod(string probingMethod) 
@@ -167,42 +260,6 @@ namespace AlgorithmLab6
             return (key + random.Next(0, Size)) % Size;
         }
 
-        // Вставка элемента
-        public void Add(T1 key, T2 value)
-        {
-            if ( probingMethod == "cuckoo")
-            {
-                AddCuckoo(key, value);
-                return;
-            }
-            if (count >= Size * 0.95)
-            {
-                Size *= 2;
-                Array.Resize(ref table, Size);
-            }
-
-            int i = 0;
-            int index;
-            int hash = Hash(key, i);
-            do
-            {
-                index = ProbingMethodSwitch(hash, i);
-                if (index == -2) //ресайз для рандома
-                {
-                    Size *= 2;
-                    Array.Resize(ref table, Size);
-                    index = ProbingMethodSwitch(hash, i);
-                }
-                if (!table[index].HasValue ) // 
-                {
-                    table[index] = (key, value);
-                    count++;
-                    return;
-                }
-
-                i++;
-            } while (true);
-        }
 
         private readonly int MaxAttempts = 30;
         private void AddCuckoo(T1 key, T2 value)
@@ -266,42 +323,6 @@ namespace AlgorithmLab6
 
             return index;
         }
-        public T2 Add(T1 key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Find(T1 key)
-        {
-            return Find(key, out T2 value);
-        }
-
-        public bool Find(T1 key, out T2 value) // public bool Search(T1 key, out T2 value)
-        {
-            if (probingMethod == "random") return FindRandomly(key, out value);
-            int i = 0;
-            int hash = Hash(key, i);
-            int index;
-            do
-            {
-                index = ProbingMethodSwitch(hash, i);
-                if (index == -1) return FindCuckoo(key, out value);  
-
-                if (!table[index].HasValue)
-                {
-                    value = default;
-                    return false; // Элемент не найден
-                }
-
-                if (table[index].Value.key.Equals(key))
-                {
-                    value = table[index].Value.value; // Элемент найден
-                    return true;
-                }
-
-                i++;
-            } while (true);
-        }
 
         private bool FindCuckoo(T1 key, out T2 value) 
         {
@@ -343,38 +364,6 @@ namespace AlgorithmLab6
             }
             value = default;
             return false;
-        }
-
-        public void Remove(T1 key)
-        {
-            if (probingMethod == "random")
-            {
-                if (!RemoveRandomly(key)) Console.WriteLine("Элемент не найден"); return;
-            }
-            int i = 0;
-            int hash = Hash(key, i);
-            int index;
-            do
-            {
-                index = ProbingMethodSwitch(hash, i);
-                if (index == -1)
-                {
-                    if (!RemoveCuckoo(key)) Console.WriteLine("Элемент не найден"); return;
-                }
-                if (!table[index].HasValue)
-                {
-                    Console.WriteLine("Элемент не найден"); return;
-                }
-
-                if (table[index].Value.key.Equals(key))
-                {
-                    table[index] = null; 
-                    count--;
-                    return;
-                }
-
-                i++;
-            } while (true);
         }
 
         private bool RemoveCuckoo(T1 key)

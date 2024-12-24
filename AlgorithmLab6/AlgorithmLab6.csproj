@@ -43,9 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChainedHashTable.cs" />
+    <Compile Include="Analyzer.cs" />
+    <Compile Include="HashMethod.cs" />
+    <Compile Include="HashTableChains.cs" />
     <Compile Include="HashTable.cs" />
-    <Compile Include="OpenAdressingHashTable.cs" />
+    <Compile Include="HashTableOpen.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
